@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "linprog-modeler"
+version = "0.1.0"
+description = ""
+authors = ["hitonanode <32937551+hitonanode@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+scipy = "^1.11.4"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.9"
+mypy = "^1.8.0"
+
+[tool.mypy]
+python_version = "3.11"
+
+[tool.ruff]
+target-version = "py311"
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I001"
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
