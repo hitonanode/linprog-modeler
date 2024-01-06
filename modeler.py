@@ -34,7 +34,7 @@ class _LPBase:
     def __neg__(self) -> "LPExpression":
         return -LPExpression.build(self)
 
-    def __le__(  # type: ignore
+    def __le__(
         self,
         other: "LPExpressionLike",
     ) -> "LPInequality":
@@ -44,7 +44,7 @@ class _LPBase:
             inequality_type=LPInequalityType.LESSEQ,
         )
 
-    def __ge__(  # type: ignore
+    def __ge__(
         self,
         other: "LPExpressionLike",
     ) -> "LPInequality":
@@ -185,13 +185,13 @@ class LPExpression:
             [_LPTerm(-t.coefficient, t.variable) for t in self.terms],
         )
 
-    def __le__(  # type: ignore
+    def __le__(
         self,
         other: "LPExpressionLike",
     ) -> "LPInequality":
         return LPInequality(self, other, LPInequalityType.LESSEQ)
 
-    def __ge__(  # type: ignore
+    def __ge__(
         self,
         other: "LPExpressionLike",
     ) -> "LPInequality":
@@ -251,7 +251,7 @@ class LPModel:
         self.constraints: list[LPInequality] = []
         self.objective: LPExpression = LPExpression(0, [])
 
-    def add_constraint(self, constraint: LPInequality):
+    def add_constraint(self, constraint: LPInequality) -> None:
         self.constraints.append(constraint)
 
     def set_objective(self, objective: LPExpressionLike) -> None:
