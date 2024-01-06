@@ -1,7 +1,7 @@
 .PHONY: ruff mypy format
 
 mypy:
-	poetry run mypy .
+	poetry run mypy --strict .
 
 ruff:
 	poetry run ruff format .
