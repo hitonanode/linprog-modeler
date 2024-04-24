@@ -1,6 +1,6 @@
 import pytest
 
-from modeler import LPModel, LPSense, LPStatus, LPVar
+from lpmodeler.model import LPModel, LPSense, LPStatus, LPVar
 
 
 def test_maximize() -> None:
