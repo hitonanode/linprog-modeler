@@ -6,7 +6,7 @@ mypy:
 	poetry run mypy --strict .
 
 ruff-lint:
-	poetry run ruff check .
+	poetry run ruff check --fix .
 
 ruff-format:
 	poetry run ruff format .
