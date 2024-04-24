@@ -5,14 +5,18 @@ from scipy.optimize import linprog  # type: ignore
 
 
 class LPVarType(Enum):
-    CONTINUOUS = 1
-    INTEGER = 2
+    CONTINUOUS = 0
+    INTEGER = 1
+    SEMICONTINUOUS = 2  # 0 or lb <= x <= ub
+    SEMIINTEGER = 3  # 0 or lb <= x <= ub, integer
 
 
 class LPStatus(Enum):
-    OPTIMAL = 1
+    OPTIMAL = 0
+    ITERATION_LIMIT = 1
     INFEASIBLE = 2
     UNBOUNDED = 3
+    NUMERICAL_ERROR = 4
 
 
 class _LPBase:
@@ -312,10 +316,7 @@ class LPModel:
 
         bounds = [(v.lower_bound, v.upper_bound) for v in var_dict.values()]
 
-        integrality = [
-            int(variable.variable_type == LPVarType.INTEGER)
-            for variable in var_dict.values()
-        ]
+        integrality = [v.variable_type.value for v in var_dict.values()]
 
         c: list[float] = [0.0] * len(var_dict)
         for term in self.objective.terms:
@@ -339,8 +340,17 @@ class LPModel:
 
             self.objective._value = res.fun + self.objective.const
 
+        elif res.status == 1:
+            self.status = LPStatus.ITERATION_LIMIT
+
         elif res.status == 2:
             self.status = LPStatus.INFEASIBLE
 
         elif res.status == 3:
             self.status = LPStatus.UNBOUNDED
+
+        elif res.status == 4:
+            self.status = LPStatus.NUMERICAL_ERROR
+
+        else:
+            raise ValueError("Invalid status code")
