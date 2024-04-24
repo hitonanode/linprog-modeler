@@ -307,7 +307,7 @@ class LPModel:
             A_eq=A_eq or None,
             b_eq=b_eq or None,
             bounds=bounds,
-            integrality=integrality,
+            integrality=integrality if sum(integrality) else None,
         )
 
         if res.status == 0:
