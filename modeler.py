@@ -282,6 +282,11 @@ class LPModel:
         for term in self.objective.terms:
             var_dict.setdefault(id(term.variable), term.variable)
 
+        if not var_dict:
+            self.status = LPStatus.OPTIMAL
+            self.objective._value = self.objective.const
+            return
+
         id_to_idx = {id(v): i for i, v in enumerate(var_dict.values())}
 
         A_ub: list[list[float]] = []
