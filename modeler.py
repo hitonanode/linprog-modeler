@@ -9,6 +9,12 @@ class LPVarType(Enum):
     INTEGER = 2
 
 
+class LPStatus(Enum):
+    OPTIMAL = 1
+    INFEASIBLE = 2
+    UNBOUNDED = 3
+
+
 class _LPBase:
     def __add__(self, other: "LPExpressionLike") -> "LPExpression":
         return LPExpression.build(self) + other
@@ -251,6 +257,7 @@ class LPModel:
         self.has_impossible_constraints = False
         self.constraints: list[LPInequality] = []
         self.objective: LPExpression = LPExpression(0, [])
+        self.status: LPStatus | None = None
 
     def add_constraint(self, constraint: LPInequality | bool) -> None:
         if isinstance(constraint, bool):
@@ -263,6 +270,10 @@ class LPModel:
         self.objective = LPExpression.build(objective)
 
     def solve(self) -> None:
+        if self.has_impossible_constraints:
+            self.status = LPStatus.INFEASIBLE
+            return
+
         var_dict: dict[int, LPVar] = {}
         for constraint in self.constraints:
             for term in constraint.lhs.terms:
@@ -316,7 +327,15 @@ class LPModel:
         )
 
         if res.status == 0:
+            self.status = LPStatus.OPTIMAL
+
             for i, variable in enumerate(var_dict.values()):
                 variable._value = res.x[i]
 
             self.objective._value = res.fun + self.objective.const
+
+        elif res.status == 2:
+            self.status = LPStatus.INFEASIBLE
+
+        elif res.status == 3:
+            self.status = LPStatus.UNBOUNDED
