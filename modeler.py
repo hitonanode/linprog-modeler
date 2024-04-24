@@ -248,11 +248,16 @@ class LPInequality:
 
 class LPModel:
     def __init__(self) -> None:
+        self.has_impossible_constraints = False
         self.constraints: list[LPInequality] = []
         self.objective: LPExpression = LPExpression(0, [])
 
-    def add_constraint(self, constraint: LPInequality) -> None:
-        self.constraints.append(constraint)
+    def add_constraint(self, constraint: LPInequality | bool) -> None:
+        if isinstance(constraint, bool):
+            if not constraint:
+                self.has_impossible_constraints = True
+        else:
+            self.constraints.append(constraint)
 
     def set_objective(self, objective: LPExpressionLike) -> None:
         self.objective = LPExpression.build(objective)
