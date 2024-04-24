@@ -19,6 +19,11 @@ class LPStatus(Enum):
     NUMERICAL_ERROR = 4
 
 
+class LPSense(Enum):
+    MINIMIZE = 0
+    MAXIMIZE = 1
+
+
 class _LPBase:
     def __add__(self, other: "LPExpressionLike") -> "LPExpression":
         return LPExpression.build(self) + other
@@ -257,7 +262,8 @@ class LPInequality:
 
 
 class LPModel:
-    def __init__(self) -> None:
+    def __init__(self, sense: LPSense = LPSense.MINIMIZE) -> None:
+        self.sense = sense
         self.has_impossible_constraints = False
         self.constraints: list[LPInequality] = []
         self.objective: LPExpression = LPExpression(0, [])
@@ -319,8 +325,11 @@ class LPModel:
         integrality = [v.variable_type.value for v in var_dict.values()]
 
         c: list[float] = [0.0] * len(var_dict)
+
+        func_weight = 1 if self.sense == LPSense.MINIMIZE else -1
+
         for term in self.objective.terms:
-            c[id_to_idx[id(term.variable)]] += term.coefficient
+            c[id_to_idx[id(term.variable)]] += term.coefficient * func_weight
 
         res = linprog(
             c,
@@ -338,7 +347,7 @@ class LPModel:
             for i, variable in enumerate(var_dict.values()):
                 variable._value = res.x[i]
 
-            self.objective._value = res.fun + self.objective.const
+            self.objective._value = res.fun * func_weight + self.objective.const
 
         elif res.status == 1:
             self.status = LPStatus.ITERATION_LIMIT
