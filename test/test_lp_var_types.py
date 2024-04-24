@@ -1,6 +1,6 @@
 import pytest
 
-from modeler import LPModel, LPStatus, LPVar, LPVarType
+from lpmodeler.model import LPModel, LPStatus, LPVar, LPVarType
 
 
 def test_semicontinuos() -> None:

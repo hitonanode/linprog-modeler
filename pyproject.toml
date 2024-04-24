@@ -1,9 +1,12 @@
 [tool.poetry]
-name = "linprog-modeler"
+name = "lpmodeler"
 version = "0.1.0"
-description = ""
+description = "Simple wrapper around scipy.optimize.linprog for linear and mixed integer programming problems"
 authors = ["hitonanode <32937551+hitonanode@users.noreply.github.com>"]
 readme = "README.md"
+packages = [
+    { include = "lpmodeler" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"

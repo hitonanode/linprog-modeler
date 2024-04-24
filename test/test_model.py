@@ -1,6 +1,6 @@
 import pytest
 
-from modeler import LPModel, LPStatus, LPVar
+from lpmodeler.model import LPModel, LPStatus, LPVar
 
 
 def test_simple_lp() -> None:
