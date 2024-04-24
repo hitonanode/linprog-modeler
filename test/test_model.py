@@ -1,4 +1,6 @@
-from modeler import LPModel, LPVar
+import pytest
+
+from modeler import LPModel, LPStatus, LPVar
 
 
 def test_simple_lp() -> None:
@@ -29,3 +31,34 @@ def test_simple_lp_nonnegative() -> None:
     model.set_objective(x + y)
 
     model.solve()
+
+
+def test_identity_constraint_feasible() -> None:
+    x = LPVar("x")
+
+    model = LPModel()
+
+    model.add_constraint(x <= 9.7)
+    model.add_constraint(3 <= 5)
+
+    model.set_objective(-x)
+
+    model.solve()
+
+    assert model.status == LPStatus.OPTIMAL
+    assert x.value() == pytest.approx(9.7)
+
+
+def test_identity_constraint_infeasible() -> None:
+    x = LPVar("x")
+
+    model = LPModel()
+
+    model.add_constraint(6 <= 5)
+
+    model.set_objective(x)
+
+    model.solve()
+
+    assert model.status == LPStatus.INFEASIBLE
+    assert x.value() is None
