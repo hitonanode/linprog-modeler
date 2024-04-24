@@ -1,4 +1,4 @@
-.PHONY: mypy ruff-lint ruff-format test
+.PHONY: all mypy ruff-lint ruff-format test
 
 all: mypy ruff-lint ruff-format test
 
