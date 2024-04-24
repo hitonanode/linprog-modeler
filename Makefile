@@ -1,16 +1,15 @@
-.PHONY: ruff mypy format test
+.PHONY: mypy ruff-lint ruff-format test
 
-all: ruff mypy format test
+all: mypy ruff-lint ruff-format test
 
 mypy:
 	poetry run mypy --strict .
 
-ruff:
-	poetry run ruff format .
+ruff-lint:
+	poetry run ruff check .
 
-format:
-	make mypy
-	make ruff
+ruff-format:
+	poetry run ruff format .
 
 test:
 	poetry run pytest
