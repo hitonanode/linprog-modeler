@@ -32,7 +32,11 @@ select = [
     "E",
     "W",
     # isort
-    "I001"
+    "I001",
+    # pyupgrade
+    "UP006",
+    "UP007",
+    "UP035",
 ]
 
 [build-system]
