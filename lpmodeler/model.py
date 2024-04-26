@@ -280,10 +280,6 @@ class LPModel:
         self.objective = LPExpression.build(objective)
 
     def solve(self) -> None:
-        if self.has_impossible_constraints:
-            self.status = LPStatus.INFEASIBLE
-            return
-
         var_dict: dict[int, LPVar] = {}
         for constraint in self.constraints:
             for term in constraint.lhs.terms:
@@ -292,6 +288,18 @@ class LPModel:
         for term in self.objective.terms:
             var_dict.setdefault(id(term.variable), term.variable)
 
+        # Reset status
+        self.objective._value = None
+        self.status = None
+        for var in var_dict.values():
+            var._value = None
+
+        # Obviously infeasible
+        if self.has_impossible_constraints:
+            self.status = LPStatus.INFEASIBLE
+            return
+
+        # Obviously optimal
         if not var_dict:
             self.status = LPStatus.OPTIMAL
             self.objective._value = self.objective.const
